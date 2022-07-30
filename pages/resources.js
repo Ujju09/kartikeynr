@@ -31,8 +31,26 @@ const Resource = ({ records }) => {
             return (
               <orbit-prompt
                 key={index}
-                question={records[index].fields["Question"]}
-                answer={records[index].fields["Answer"]}
+                question={
+                  records[index].fields.hasOwnProperty("Question") === true
+                    ? [records[index].fields["Question"]]
+                    : "Please fill in the question"
+                }
+                answer={
+                  records[index].fields.hasOwnProperty("Answer") === true
+                    ? [records[index].fields["Answer"]]
+                    : "Please fill in the answer on AirTable."
+                }
+                answer-attachments={
+                  records[index].fields.hasOwnProperty("AnswerImage") === true
+                    ? [records[index].fields["AnswerImage"][0].url]
+                    : null
+                }
+                question-attachments={
+                  records[index].fields.hasOwnProperty("QuestionImage") === true
+                    ? [records[index].fields["QuestionImage"][0].url]
+                    : null
+                }
               ></orbit-prompt>
             );
           })}
@@ -51,7 +69,7 @@ export async function getServerSideProps() {
   const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
   const TABLE_KEY = process.env.NEXT_PUBLIC_TABLE_KEY;
   const res = await fetch(
-    `https://api.airtable.com/v0/${TABLE_KEY}/Kartikey?maxRecords=20&view=Grid%20view`,
+    `https://api.airtable.com/v0/${TABLE_KEY}/Kartikey?maxRecords=100&view=Grid%20view`,
     {
       headers: { Authorization: `Bearer ${API_KEY}` },
     }
